@@ -5,6 +5,13 @@ const lanceMarker = new Effect(90, e => {
     Lines.lineAngle(e.x, e.y, e.rotation-180, 16 * 20)
 })
 
+const astralBarrier = new Effect(60, e => {
+    for(let i = 0; i < 4; i++){
+        Drawf.tri(e.x, e.y, 10 * e.fout(Interp.pow10Out), 30, 90 * i + 90 * e.finpow())
+    }
+})
+
 module.exports = {
-    lanceMarker: lanceMarker
+    lanceMarker: lanceMarker,
+    astralBarrier: astralBarrier
 }
