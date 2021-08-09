@@ -15,7 +15,7 @@ const etherealLancer = (input) => {
 // attack: the code executed when the pattern is called
 const normal = new Seq([
     {
-                duration:20,
+        duration:20,
         attack: (input) => {
             print("attack 1!")
             let ang = 0;
