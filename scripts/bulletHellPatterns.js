@@ -12,13 +12,29 @@ const etherealLancer = (input) => {
     })
 }
 
-const ancientNeedler = (ent, team, x, y) => {
-    let ang = 0;
-    for(let i = 0; i < 45; i++){
+const ancientNeedleCircle = (ent, team, x, y, amount) => {
+    let ang = 0
+    for(let i = 0; i < amount; i++){
         Time.run(i, () => {
+            sfx.pew1.at(x, y)
+            for(let j = 0; j < 4; j++){
+                gb.ancientNeedle.create(ent, team, x, y, ang * 48 + 90 * j)
+            }
+            for(let j = 0; j < 4; j++){
+                gb.ancientNeedle.create(ent, team, x, y, -(ang * 48 + 90 * j))
+            }
+            ang++
+        })
+    }
+}
+
+const ancientNeedler = (ent, team, x, y, duration) => {
+    let ang = 0;
+    for(let i = 0; i < duration; i++){
+        Time.run(i, () => {
+            sfx.pew1.at(x, y)
             gb.ancientNeedle.create(ent, team, x, y, ang*16)
             gb.ancientNeedle.create(ent, team, x, y, ang*16 - 180)
-            ang++
         })
     }
 }
@@ -27,16 +43,23 @@ const ancientNeedler = (ent, team, x, y) => {
 // attack: the code executed when the pattern is called
 const normal = new Seq([
     {
-        duration:20,
+        duration:60*7,
         attack(input){
             print("attack 1!")
-            ancientNeedler(input, input.team, input.x, input.y)
+            ancientNeedler(input, input.team, input.x, input.y, 60*7)
         }
     },
     {
         duration:90,
         attack(input){
             print("attack 2!")
+            ancientNeedleCircle(input, input.team, input.x, input.y, 90)
+        }
+    },
+    {
+        duration:90,
+        attack(input){
+            print("attack 3!")
             for(let i = 0; i < 90; i++){
                 let j  = i
                 let len = 16 + (256 * (i/90))
@@ -45,6 +68,8 @@ const normal = new Seq([
                     let y1 = input.y + Angles.trnsy(j * 16, len)
                     let x2 = input.x + Angles.trnsx(j * 16 -180, len)
                     let y2 = input.y + Angles.trnsy(j * 16 -180, len)
+                    sfx.pew1.at(x1, y1)
+                    sfx.pew1.at(x2, y2)
                     let ang1 = Angles.angle(x1,y1,Vars.player.x,Vars.player.y)
                     let ang2 = Angles.angle(x1,y2,Vars.player.x,Vars.player.y)
                     gb.ancientNeedle.create(input, input.team, x1, y1, ang1)
@@ -56,7 +81,7 @@ const normal = new Seq([
     {
         duration: 15,
         attack(input){
-            print("attack 3!")
+            print("attack 4!")
             for(let i = 0; i < 5; i++){
                 Time.run(i, () => {
                     etherealLancer(input)
@@ -103,7 +128,7 @@ const special = new Seq([
             effects.astralBarrier.at(x,y)
             Time.run(80, () => {
                 let an = Timer.schedule(() => {
-                    ancientNeedler(input, input.team, x, y)
+                    ancientNeedler(input, input.team, x, y, 45)
                 }, 0, 1)
                 Sounds.laserblast.at(x,y)
                 for(let i = 0; i < 4; i++){

@@ -35,7 +35,10 @@ module.exports = {
                             this.data.specialCooldown = 1200
                         }
                         let pattern = patternSeq.random()
-                        pattern.attack(this.unit)
+                        //let pattern = patterns.normal.get(1)
+                        Time.run(30, () => {
+                            pattern.attack(this.unit)
+                        });
                         // 1 second of cooldown between attacks
                         Time.run(pattern.duration + 60, () => {
                             this.data.state = 0
