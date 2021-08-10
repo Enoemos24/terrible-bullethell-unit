@@ -7,7 +7,7 @@ const etherealLancer = (input) => {
     let x = Angles.trnsx(ang, 180) + Vars.player.x
     let y = Angles.trnsy(ang, 180) + Vars.player.y
     effects.lanceMarker.at(Vars.player.x, Vars.player.y, ang)
-    Time.run(2, () => {
+    Time.run(15, () => {
         gb.etherealLance.create(input, input.team, x, y, ang-180)
     })
 }
@@ -34,13 +34,31 @@ const normal = new Seq([
         }
     },
     {
-        duration:15*15,
+        duration:90,
         attack(input){
             print("attack 2!")
-            let ang = 0
-            let j = 0
-            for(let i = 0; i < 20; i++){
-                Time.run(i*20, () => {
+            for(let i = 0; i < 90; i++){
+                let j  = i
+                let len = 16 + (256 * (i/90))
+                Time.run(i, () => {
+                    let x1 = input.x + Angles.trnsx(j * 16, len)
+                    let y1 = input.y + Angles.trnsy(j * 16, len)
+                    let x2 = input.x + Angles.trnsx(j * 16 -180, len)
+                    let y2 = input.y + Angles.trnsy(j * 16 -180, len)
+                    let ang1 = Angles.angle(x1,y1,Vars.player.x,Vars.player.y)
+                    let ang2 = Angles.angle(x1,y2,Vars.player.x,Vars.player.y)
+                    gb.ancientNeedle.create(input, input.team, x1, y1, ang1)
+                    gb.ancientNeedle.create(input, input.team, x2, y2, ang2)
+                })
+            }
+        }
+    },
+    {
+        duration: 15,
+        attack(input){
+            print("attack 3!")
+            for(let i = 0; i < 5; i++){
+                Time.run(i, () => {
                     etherealLancer(input)
                 })
             }
@@ -49,7 +67,34 @@ const normal = new Seq([
 ])
 const special = new Seq([
     {
-        duration: 70,
+        duration: 120,
+        //TODO: Somehow make the lasers and markers render when out of frame
+        attack(input){
+            print("astral cage!")
+            let w = Vars.world.tiles.width*8
+            let h = Vars.world.tiles.height*8
+            sfx.barrierflash.at(input.x,input.y)
+            effects.astralBarrier.at(input.x,input.y)
+            Time.run(30, () => {
+                Geometry.iterateLine(0,0,0,0,h,40,(x, y) => {
+                    effects.astralMarker.at(x, y, 0, {x: w, y:y})
+                    Time.run(30, () => {
+                        effects.astralCage.at(x, y, 0, {x: w, y:y})
+                        Sounds.laserblast.at(Vars.player.x,Vars.player.y)
+                    });
+                })
+                Geometry.iterateLine(0,0,0,w,0,40,(x, y) => {
+                    effects.astralMarker.at(x, y, 0, {x: x, y:h})
+                    Time.run(90, () => {
+                        effects.astralCage.at(x, y, 0, {x: x, y:h})
+                        Sounds.laserblast.at(Vars.player.x,Vars.player.y)
+                    });
+                })
+            });
+        }
+    },
+    {
+        duration: 250,
         attack(input){
             let x = input.x
             let y = input.y
@@ -64,7 +109,7 @@ const special = new Seq([
                 for(let i = 0; i < 4; i++){
                     gb.astralBarrier.create(input, input.team, x, y, i*90)
                 }
-                Time.run(60 * 3, () => {
+                Time.run(180, () => {
                     an.cancel()
                 })
             });

@@ -3,9 +3,22 @@ const etherealLance = extend(BasicBulletType, {
     speed:16,
     lifetime:40,
 
+    init(b){
+        if(!b)return
+        b.data = {
+            trail: new Trail(15)
+        }
+    },
+    update(b){
+        this.super$update(b)
+        b.data.trail.update(b.x, b.y)
+    },
     draw(b){
-        Drawf.tri(b.x,b.y,10,30,b.rotation())
-        Drawf.tri(b.x,b.y,10,10,b.rotation()-180)
+        Draw.color(Pal.lancerLaser)
+        Fill.square(b.x,b.y,5,b.rotation()+45)
+        b.data.trail.draw(Pal.lancerLaser, 4)
+        Draw.color(Color.white)
+        Fill.square(b.x,b.y,3,b.rotation()+45)
     }
 })
 
@@ -16,7 +29,11 @@ const astralBarrier = extend(ContinuousLaserBulletType, {
     length: 1600,
 
     draw(b){
+        Draw.color(Pal.lancerLaser)
         Lines.stroke((15 + (2 * Mathf.sin(Time.time*2))) * b.fout(Interp.pow10Out))
+        Lines.lineAngle(b.x,b.y,b.rotation(),1600)
+        Draw.color(Color.white)
+        Lines.stroke((12 + (2 * Mathf.sin(Time.time*2))) * b.fout(Interp.pow10Out))
         Lines.lineAngle(b.x,b.y,b.rotation(),1600)
     }
 })
@@ -29,7 +46,10 @@ const ancientNeedle = extend(BasicBulletType, {
     height: 5,
 
     draw(b){
-        Fill.square(b.x, b.y, 5, b.rotation()+45 + Time.time)
+        Draw.color(Pal.lancerLaser)
+        Fill.square(b.x,b.y,5,b.rotation() + Time.time * 4)
+        Draw.color(Color.white)
+        Fill.square(b.x,b.y,3,b.rotation() + Time.time * 4)
     }
 })
 

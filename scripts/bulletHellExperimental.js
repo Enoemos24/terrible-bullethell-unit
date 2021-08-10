@@ -13,7 +13,7 @@ module.exports = {
                 let ang = Mathf.range(360);
                 let x = (Angles.trnsx(ang, 64) + Vars.player.x) - this.unit.x
                 let y = (Angles.trnsy(ang, 64) + Vars.player.y) - this.unit.y
-                this.unit.move(x,y)
+                this.unit.move(x, y)
             },
             updateUnit(){
                 this.unit.lookAt(Vars.player.x, Vars.player.y)
