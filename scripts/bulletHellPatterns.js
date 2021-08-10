@@ -35,6 +35,7 @@ const ancientNeedler = (ent, team, x, y, duration) => {
             sfx.pew1.at(x, y)
             gb.ancientNeedle.create(ent, team, x, y, ang*16)
             gb.ancientNeedle.create(ent, team, x, y, ang*16 - 180)
+            ang++
         })
     }
 }
